@@ -10,9 +10,11 @@ Everything is verified and staged. What remains needs credentials only you have.
 | `npm pack` contents correct | ✅ 10 files, 12.5 kB |
 | Installs and runs in a clean project | ✅ SSR-tested |
 | Name `pijarui` free on npm | ✅ checked |
-| GitHub org `pijarui` | ✅ exists |
-| Repo `pijarui/pijarui` | ❌ **not created yet** (404) |
+| GitHub repo `pijarui/pijarui` | ✅ public, pushed |
+| CI green on `main` | ✅ typecheck + build + artifact smoke test |
 | npm login on this machine | ❌ **`ENEEDAUTH`** — no `~/.npmrc` |
+
+Only the last row is left.
 
 ## Step 1 — Log in to npm
 
@@ -32,38 +34,7 @@ npm whoami        # should print your npm username
 If your account has 2FA on publish (recommended), keep your authenticator open —
 `npm publish` will prompt for a one-time password.
 
-## Step 2 — Create the GitHub repo
-
-`packages/pijarui/package.json` has no `repository` field yet, because the repo
-does not exist. The npm page links to a repository, so create it first:
-
-```bash
-gh repo create pijarui/pijarui --public \
-  --description "Dark-first React design system on Tailwind v4"
-```
-
-Then add the field to `packages/pijarui/package.json`:
-
-```json
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/pijarui/pijarui.git"
-  },
-  "homepage": "https://pijarui.com",
-  "bugs": { "url": "https://github.com/pijarui/pijarui/issues" },
-```
-
-And push:
-
-```bash
-cd ~/projects/pijarui
-git add -A && git commit -m "feat: Pijar UI v0.1.0 — package + site"
-git branch -M main
-git remote add origin https://github.com/pijarui/pijarui.git
-git push -u origin main
-```
-
-## Step 3 — Publish
+## Step 2 — Publish
 
 ```bash
 cd ~/projects/pijarui/packages/pijarui
@@ -76,8 +47,10 @@ npm publish
 ```
 
 `publishConfig.access` is already `public`, so no `--access` flag is needed.
+`repository`, `homepage`, and `bugs` are already set, so the npm page links back
+to GitHub correctly.
 
-## Step 4 — Confirm it is really live
+## Step 3 — Confirm it is really live
 
 ```bash
 npm view pijarui version         # -> 0.1.0
