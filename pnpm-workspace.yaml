@@ -1,0 +1,10 @@
+packages:
+  - "packages/*"
+  - "site"
+
+# esbuild (dipakai tsup) perlu menjalankan postinstall script.
+# pnpm 11.22.0 punya quirk: onlyBuiltDependencies di-ignore meski ditulis benar,
+# jadi kita pakai dangerouslyAllowAllBuilds. Aman di sini karena hanya esbuild
+# dan @tailwindcss/oxide yang punya build script, keduanya tooling build resmi.
+dangerouslyAllowAllBuilds: true
+verifyDepsBeforeRun: false

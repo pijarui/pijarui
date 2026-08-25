@@ -1,0 +1,70 @@
+{
+  "name": "pijarui",
+  "version": "0.1.0",
+  "description": "Dark-first React design system on Tailwind v4. Accessible by construction — 44px touch targets, WCAG AA contrast, and focus states you cannot forget to write.",
+  "keywords": [
+    "react",
+    "design-system",
+    "tailwind",
+    "tailwindcss",
+    "ui",
+    "components",
+    "dark-mode",
+    "accessibility",
+    "nextjs",
+    "shadcn"
+  ],
+  "license": "MIT",
+  "author": "Gusman",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pijarui/pijarui.git",
+    "directory": "packages/pijarui"
+  },
+  "homepage": "https://pijarui.com",
+  "bugs": {
+    "url": "https://github.com/pijarui/pijarui/issues"
+  },
+  "type": "module",
+  "sideEffects": ["*.css"],
+  "files": ["dist"],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsup && node scripts/copy-css.mjs",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm build"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
+    "tailwindcss": ">=4"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.3.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "react": "^19",
+    "tsup": "^8.5.0",
+    "typescript": "^5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

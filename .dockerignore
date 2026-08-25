@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+dist
+.git
+.gitignore
+*.md
+!packages/pijarui/README.md
+.env*
+*.tgz
+*.tsbuildinfo
+.DS_Store

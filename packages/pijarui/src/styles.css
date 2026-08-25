@@ -1,0 +1,106 @@
+/**
+ * Token Pijar UI — impor SEKALI di root aplikasi, setelah Tailwind:
+ *
+ *   @import "tailwindcss";
+ *   @import "pijarui/styles.css";
+ *
+ * Berkas ini juga memberi tahu Tailwind untuk memindai komponen Pijar yang
+ * sudah ter-build, sehingga utility yang dipakai di dalamnya ikut dihasilkan.
+ * Tanpa baris `@source` itu, komponen akan ter-render tanpa gaya — ini jebakan
+ * paling umum saat memakai design system pihak ketiga di Tailwind v4.
+ */
+
+@source "./";
+
+:root {
+  /* --- Permukaan: dari paling dalam ke paling menonjol ------------------- */
+  --background: #0b1020;
+  --foreground: #f1f5f9;
+
+  --card: #121727;
+  --card-foreground: #f1f5f9;
+
+  --popover: #161c30;
+  --popover-foreground: #f1f5f9;
+
+  --muted: #1a2136;
+  --muted-foreground: #9aa8bd;
+
+  /* --- Aksi -------------------------------------------------------------- */
+  /* Primary sengaja putih, bukan biru/ungu: aksi utama jadi elemen paling
+   * terang di layar gelap, dan produk yang memakainya tidak mewarisi hue
+   * yang bukan miliknya. */
+  --primary: #f8fafc;
+  --primary-foreground: #0b1020;
+
+  --secondary: #1e2740;
+  --secondary-foreground: #e2e8f0;
+
+  --accent: #34d399;
+  --accent-foreground: #052e21;
+
+  --destructive: #f87171;
+  --destructive-foreground: #2b0b0b;
+
+  /* --- Garis & fokus ----------------------------------------------------- */
+  --border: #232a3d;
+  --input: #2b3348;
+  --ring: #94a3b8;
+
+  /* --- Radius ------------------------------------------------------------ */
+  /* Seluruh skala diturunkan dari satu angka. Ubah ini saja untuk mengubah
+   * kelengkungan seluruh produk. */
+  --radius: 0.625rem;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 12px);
+}
+
+@layer base {
+  body {
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  /* Fokus keyboard yang konsisten. Komponen boleh menimpanya, tapi tidak ada
+   * elemen yang kehilangan indikator fokus hanya karena lupa menuliskannya. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}

@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+/*
+ * Inilah cara konsumen memakai Pijar: dua baris impor, tidak ada konfigurasi.
+ * Situs ini sengaja memakai jalur yang sama persis dengan yang tertulis di
+ * dokumentasi — kalau baris ini rusak, landing page ikut rusak, jadi
+ * petunjuk pemasangan tidak bisa diam-diam jadi basi.
+ */
+@import "pijarui/styles.css";
+
+/* Tailwind v4 perlu diberi tahu untuk memindai komponen paket, agar utility
+ * yang dipakai di dalamnya ikut dihasilkan. */
+@source "../../node_modules/pijarui/dist";
+
+body {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}

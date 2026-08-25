@@ -1,0 +1,12 @@
+{
+  "name": "pijarui-monorepo",
+  "private": true,
+  "scripts": {
+    "build:pkg": "pnpm --filter pijarui build",
+    "build:site": "pnpm --filter pijarui-site build",
+    "build": "pnpm build:pkg && pnpm build:site",
+    "dev": "pnpm --filter pijarui-site dev",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "packageManager": "pnpm@11.22.0"
+}
