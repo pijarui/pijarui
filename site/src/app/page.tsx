@@ -10,6 +10,8 @@ import {
   Field,
   FormError,
   Input,
+  Logo,
+  LogoLockup,
 } from "pijarui";
 
 import { CopyCommand } from "./copy-command";
@@ -27,9 +29,7 @@ export default function HomePage() {
     <>
       <header className="border-border border-b">
         <nav className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <span className="text-base font-semibold tracking-tight">
-            Pijar UI
-          </span>
+          <LogoLockup />
           <div className="flex items-center gap-1">
             <Button asChild variant="ghost" size="sm">
               <a href="#install">Install</a>
@@ -51,7 +51,10 @@ export default function HomePage() {
         {/* ─────────────────────────────── Hero */}
         <section className="mx-auto w-full max-w-5xl px-4 pt-16 pb-20 sm:px-6 sm:pt-24">
           <div className="max-w-2xl">
-            <Badge variant="success">v0.1.0 · MIT</Badge>
+            <Logo className="size-11" aria-hidden title="" />
+            <div className="mt-6">
+              <Badge variant="success">v0.1.1 · MIT</Badge>
+            </div>
             <h1 className="mt-5 text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
               Accessible by construction, not by discipline.
             </h1>
@@ -132,7 +135,7 @@ export default function HomePage() {
               the package breaks, this page breaks with it.
             </p>
             <p className="text-muted-foreground/70 mt-2 font-mono text-xs">
-              pijarui@0.1.0 · registry.npmjs.org
+              pijarui@0.1.1 · registry.npmjs.org
             </p>
 
             <div className="mt-10 grid gap-6 lg:grid-cols-2">

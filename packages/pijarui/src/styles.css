@@ -104,3 +104,80 @@
     outline-offset: 2px;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Motion untuk komponen berlapis (Dialog, Select).
+ *
+ * Didefinisikan di sini, bukan lewat paket `tw-animate-css`: yang dibutuhkan
+ * cuma fade dan zoom kecil, dan itu tidak sepadan dengan satu dependency lagi
+ * di setiap aplikasi yang memakai Pijar.
+ *
+ * Radix menyetel data-state="open" / "closed" pada elemennya, jadi CSS ini
+ * bekerja tanpa JavaScript tambahan.
+ * ------------------------------------------------------------------------- */
+
+@keyframes pijar-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pijar-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pijar-zoom-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+}
+
+@keyframes pijar-zoom-out {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+}
+
+@keyframes pijar-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+[data-slot="dialog-overlay"][data-state="open"] {
+  animation: pijar-fade-in 150ms ease-out;
+}
+[data-slot="dialog-overlay"][data-state="closed"] {
+  animation: pijar-fade-out 120ms ease-in;
+}
+
+[data-slot="dialog-content"][data-state="open"] {
+  animation: pijar-zoom-in 150ms ease-out;
+}
+[data-slot="dialog-content"][data-state="closed"] {
+  animation: pijar-zoom-out 120ms ease-in;
+}
+
+[data-slot="select-content"][data-state="open"] {
+  animation: pijar-slide-in 120ms ease-out;
+}
+
+[data-slot="toast"] {
+  animation: pijar-slide-in 160ms ease-out;
+}
+
+/* Menghormati preferensi sistem. Wajib, bukan opsional: gerakan bisa memicu
+ * mual dan migrain pada sebagian orang. */
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="dialog-overlay"],
+  [data-slot="dialog-content"],
+  [data-slot="select-content"],
+  [data-slot="toast"] {
+    animation: none !important;
+  }
+}

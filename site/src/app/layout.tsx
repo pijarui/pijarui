@@ -16,6 +16,13 @@ export const metadata: Metadata = {
   },
   description:
     "A dark-first React design system on Tailwind v4. Accessible by construction: 44px touch targets, WCAG AA contrast, and focus states you cannot forget to write.",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/logo.svg", type: "image/svg+xml", media: "(prefers-color-scheme: dark)" },
+    ],
+    apple: "/icon.svg",
+  },
   openGraph: {
     type: "website",
     url: SITE,

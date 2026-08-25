@@ -21,6 +21,7 @@ export {
 export { Field, FormError } from "./components/field";
 export { Input } from "./components/input";
 export { Label } from "./components/label";
+export { Logo, LogoLockup } from "./components/logo";
 
 /** Penggabung className — diekspor karena konsumen butuh untuk komponennya sendiri. */
 export { cn } from "./lib/utils";

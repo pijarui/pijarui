@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, CardHeader, CardTitle } from "pijarui";
+import { Button, Card, CardContent, CardHeader, CardTitle, LogoLockup } from "pijarui";
 
 export const metadata = {
   title: "Pro",
@@ -20,8 +20,8 @@ export default function ProPage() {
     <>
       <header className="border-border border-b">
         <nav className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <a href="/" className="text-base font-semibold tracking-tight">
-            Pijar UI
+          <a href="/" className="inline-flex">
+            <LogoLockup />
           </a>
           <Button asChild variant="ghost" size="sm">
             <a href="/">← Back</a>

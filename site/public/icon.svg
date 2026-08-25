@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Pijar UI">
+  <title>Pijar UI</title>
+  <rect width="32" height="32" rx="7" fill="#0b1020"/>
+  <path d="M9.5 6h7a6.6 6.6 0 0 1 0 13.2h-3.6V26h-3.4V6Z" fill="#f1f5f9"/>
+  <circle cx="16.2" cy="12.6" r="2.8" fill="#34d399"/>
+</svg>

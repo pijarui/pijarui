@@ -52,10 +52,23 @@ No provider, no wrapper, no config file to extend.
 
 ## Components
 
-`Button` · `Input` · `Label` · `Card` · `Badge` · `Field` · `FormError`
+`Button` · `Input` · `Label` · `Card` · `Badge` · `Field` · `FormError` ·
+`Logo` · `LogoLockup`
 
 Plus `cn()`, the class merger, so your own components can accept a `className`
 prop that reliably wins.
+
+### Logo
+
+The Pijar mark reads its colours from the tokens, so a themed product gets a
+themed logo without shipping a new file:
+
+```tsx
+<Logo />                       {/* the mark alone */}
+<Logo className="size-12" />   {/* any size */}
+<LogoLockup />                 {/* mark + "Pijar UI" at the right spacing */}
+<LogoLockup label="Acme" />    {/* mark + your own name */}
+```
 
 ### Button
 
