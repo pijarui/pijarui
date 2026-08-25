@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck both workspaces
+        run: pnpm typecheck
+
+      # Builds the package, then the site. The site consumes the package
+      # through workspace:*, so a green build here proves the package is
+      # actually consumable — not just that it compiles.
+      - name: Build
+        run: pnpm build
+
+      - name: Verify package contents
+        run: |
+          cd packages/pijarui
+          npm pack --dry-run
+
+      # Installs the real tarball in a throwaway project and renders the
+      # components server-side. Catches packaging mistakes that a workspace
+      # build hides: a missing export, a file left out of "files", a broken
+      # exports map.
+      - name: Smoke-test the published artifact
+        run: |
+          cd packages/pijarui
+          npm pack
+          TARBALL="$PWD/$(ls pijarui-*.tgz)"
+          mkdir -p /tmp/consumer && cd /tmp/consumer
+          npm init -y >/dev/null
+          npm install "$TARBALL" react react-dom
+          node --input-type=module -e '
+            import * as pijar from "pijarui";
+            import { renderToStaticMarkup } from "react-dom/server";
+            import React from "react";
+
+            const expected = ["Badge","Button","Card","CardContent","CardDescription",
+              "CardFooter","CardHeader","CardTitle","Field","FormError","Input","Label","cn"];
+            const missing = expected.filter(k => !(k in pijar));
+            if (missing.length) throw new Error("missing exports: " + missing);
+
+            if (pijar.cn("px-4","px-6") !== "px-6")
+              throw new Error("cn() did not resolve the Tailwind conflict");
+
+            const field = renderToStaticMarkup(
+              React.createElement(pijar.Field, { label: "Email", htmlFor: "em" },
+                React.createElement(pijar.Input, { id: "em", type: "email" })));
+            if (!field.includes("for=\"em\"") || !field.includes("id=\"em\""))
+              throw new Error("Field did not wire label to input");
+
+            const btn = renderToStaticMarkup(React.createElement(pijar.Button, null, "Save"));
+            if (!btn.includes("min-h-11"))
+              throw new Error("Button lost its 44px touch target");
+
+            console.log("artifact smoke test passed");
+          '
