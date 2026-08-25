@@ -6,7 +6,7 @@
     "build:site": "pnpm --filter pijarui-site build",
     "build": "pnpm build:pkg && pnpm build:site",
     "dev": "pnpm --filter pijarui-site dev",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm build:pkg && pnpm -r typecheck"
   },
   "packageManager": "pnpm@11.22.0"
 }
