@@ -1,5 +1,8 @@
 # Pijar UI
 
+[![npm](https://img.shields.io/npm/v/pijarui?color=34d399)](https://www.npmjs.com/package/pijarui)
+[![license](https://img.shields.io/npm/l/pijarui?color=34d399)](./LICENSE)
+
 A dark-first React design system on Tailwind v4.
 
 Most accessibility bugs are not decisions anyone argued about — they are things

@@ -131,6 +131,9 @@ export default function HomePage() {
               — the same build you install. This page is the integration test: if
               the package breaks, this page breaks with it.
             </p>
+            <p className="text-muted-foreground/70 mt-2 font-mono text-xs">
+              pijarui@0.1.0 · registry.npmjs.org
+            </p>
 
             <div className="mt-10 grid gap-6 lg:grid-cols-2">
               <Card>

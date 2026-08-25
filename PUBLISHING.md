@@ -4,72 +4,33 @@
 
 | Item | State |
 | --- | --- |
-| Package builds (ESM + CJS + types) | ✅ verified |
-| `npm pack` contents correct | ✅ 10 files, 12.6 kB |
-| Installs and runs in a clean project | ✅ SSR-tested |
-| GitHub repo `pijarui/pijarui` | ✅ public, pushed |
+| **`pijarui@0.1.0` published** | ✅ **live on npm** |
+| Verified from the public registry | ✅ 9 checks, installed as an outside user |
+| GitHub repo `pijarui/pijarui` | ✅ public, tagged `v0.1.0` |
 | CI green on `main` | ✅ typecheck + build + artifact smoke test |
-| `npm whoami` | ✅ `gusman` |
-| `repository.url` matches the repo | ✅ required by OIDC |
-| Publish workflow (`publish.yml`) | ✅ committed, waiting on the trusted publisher |
-| **Version 0.1.0 published** | ❌ **blocked — see below** |
+| Publish workflow (`publish.yml`) | ✅ committed |
+| Trusted publisher registered | ⬜ **do this next — Phase 2** |
+| Token access restricted | ⬜ Phase 3 |
+| Bootstrap token revoked | ⬜ **do this — see below** |
 
-## Why the first publish is blocked
+The first release was bootstrapped with a granular token. That token must be
+revoked: npmjs.com → **Access Tokens** → revoke. Phase 2 removes the need for
+tokens permanently.
 
-```
-npm error code E403
-npm error 403 Forbidden - PUT https://registry.npmjs.org/pijarui -
-Two-factor authentication or granular access token with bypass 2fa
-enabled is required to publish packages.
-```
+## Why the first publish needed a token
 
-npm now requires 2FA or a granular token for every publish, regardless of the
-account's own 2FA setting (`npm profile get` reports `two-factor auth: disabled`
-for this account, and the publish is still refused).
+npm requires 2FA or a granular token for every publish, regardless of the
+account's own 2FA setting (`npm profile get` reported
+`two-factor auth: disabled` for this account, and the publish was still
+refused with a 403).
 
-**Trusted publishing cannot solve this for version 0.1.0.** The trusted
-publisher is configured on the *package settings* page, and that page does not
-exist until the package has been published at least once. npm acknowledges the
-limitation in [npm/cli#8544](https://github.com/npm/cli/issues/8544) — PyPI has
-"pending publishers" for this, npm does not yet.
+**Trusted publishing could not cover 0.1.0.** The trusted publisher is
+configured on the *package settings* page, and that page does not exist until
+the package has been published at least once —
+[npm/cli#8544](https://github.com/npm/cli/issues/8544). PyPI has "pending
+publishers" for this case; npm does not yet.
 
-So the sequence is: **bootstrap once by hand, then automate forever.**
-
-## Phase 1 — Bootstrap: the first release
-
-Pick either route. Both need a human; neither can be delegated to an agent.
-
-### Route A — enable 2FA (recommended)
-
-1. npmjs.com → your avatar → **Account** → **Two-Factor Authentication** → enable
-   (authenticator app).
-2. Publish with the one-time code:
-
-```bash
-cd ~/projects/pijarui/packages/pijarui
-npm publish --otp=123456      # code from your authenticator
-```
-
-Leaves the account permanently stronger, and is the prerequisite for the
-"disallow tokens" hardening in Phase 3.
-
-### Route B — short-lived granular token
-
-If you would rather not enable 2FA right now:
-
-1. npmjs.com → **Access Tokens** → **Generate New Token** → **Granular Access Token**
-   - Permissions: **Read and write**
-   - **Bypass two-factor authentication**: ✅ ticked (otherwise it still 403s)
-   - Expiration: **1 day** — this token exists only to bootstrap
-2. Publish:
-
-```bash
-cd ~/projects/pijarui/packages/pijarui
-NPM_CONFIG_TOKEN=npm_xxxxxxxx npm publish
-```
-
-3. **Revoke the token immediately afterwards.** It is not needed again — Phase 2
-   removes the need for tokens entirely.
+That bootstrap is now done, once, and never again.
 
 ## Phase 2 — Wire up trusted publishing
 
