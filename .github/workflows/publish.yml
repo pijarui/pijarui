@@ -1,0 +1,84 @@
+name: Publish
+
+# Publikasi ke npm lewat Trusted Publishing (OIDC).
+#
+# Tidak ada NPM_TOKEN di mana pun — GitHub menandatangani identitas workflow
+# ini, npm memverifikasinya langsung. Tidak ada rahasia yang bisa bocor dari
+# repo, dan tidak ada token yang perlu dirotasi.
+#
+# npm juga mencatat provenance: halaman paket menampilkan commit dan workflow
+# persis yang membangunnya, sehingga siapa pun bisa memverifikasi bahwa
+# tarball di registry benar-benar berasal dari kode di repo ini.
+#
+# SETUP SEKALI DI npmjs.com (tidak bisa dilakukan dari sini):
+#   npmjs.com → Packages → pijarui → Settings → Trusted Publisher
+#     Organization or user : pijarui
+#     Repository           : pijarui
+#     Workflow filename    : publish.yml
+#     Environment          : (kosongkan)
+#     Allowed actions      : npm publish
+#
+# PENTING — MASALAH AYAM & TELUR:
+# Halaman setting paket baru ada SETELAH paket terbit minimal sekali. Jadi
+# versi 0.1.0 TIDAK BISA dirilis lewat workflow ini; butuh publish manual
+# sekali dengan 2FA/OTP. Setelah itu barulah Trusted Publisher didaftarkan,
+# dan semua rilis berikutnya jalan dari sini tanpa token.
+# Lihat PUBLISHING.md → "Bootstrap: rilis pertama".
+# Referensi keterbatasan: https://github.com/npm/cli/issues/8544
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # WAJIB untuk OIDC. Tanpa ini npm menolak dengan 403 dan pesannya
+      # menyesatkan (terlihat seperti masalah 2FA).
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      # Trusted publishing butuh npm >= 11.5.1; runner masih membawa versi lama.
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # Gerbang yang sama seperti CI. Sebuah rilis tidak boleh melewati
+      # pemeriksaan yang harus dilewati setiap push.
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
+
+      - name: Verify the version is not already published
+        run: |
+          cd packages/pijarui
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "pijarui@$VERSION" version 2>/dev/null; then
+            echo "::error::pijarui@$VERSION already exists on npm. Bump the version first."
+            exit 1
+          fi
+          echo "pijarui@$VERSION is free to publish"
+
+      - name: Publish
+        run: |
+          cd packages/pijarui
+          npm publish
