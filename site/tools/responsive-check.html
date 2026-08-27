@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Responsive check — real viewports</title>
+<style>
+  body{margin:0;background:#18181b;color:#e8eaed;font-family:system-ui,sans-serif;padding:24px}
+  h1{font-size:17px;margin:0 0 4px}
+  p{color:#a1a1aa;font-size:13px;margin:0 0 18px;max-width:84ch;line-height:1.6}
+  code{background:#27272a;padding:1px 5px;border-radius:3px;font-size:12px}
+  .row{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+  .dev{text-align:center}
+  iframe{border:2px solid #3f3f46;border-radius:10px;background:#08090c;display:block}
+  .cap{font-family:ui-monospace,monospace;font-size:11px;color:#a1a1aa;margin-top:7px}
+  #out{margin-top:22px;font-family:ui-monospace,monospace;font-size:12px;white-space:pre-wrap;
+       background:#101216;border:1px solid #27272a;border-radius:8px;padding:16px;line-height:1.7}
+</style>
+</head>
+<body>
+<h1>Responsive check — real viewports</h1>
+<p><strong>Why this file exists.</strong> An earlier version of this check set
+<code>body.style.width</code> and excluded <code>&lt;pre&gt;</code> from the results. Both were wrong:
+resizing the body does <em>not</em> re-evaluate media queries, so <code>lg:</code> breakpoints stayed
+active and the single-column layout was never tested — and excluding <code>&lt;pre&gt;</code> skipped
+exactly the element that overflowed. A real iPhone caught a 70px horizontal scroll that this
+check reported as clean. An iframe has its own viewport, so breakpoints behave properly, and
+nothing is excluded here: the pass condition is the document's own scrollWidth.</p>
+
+<div class="row">
+  <div class="dev"><iframe id="f390" src="/" width="390" height="500"></iframe><div class="cap">390 — iPhone 14/15</div></div>
+  <div class="dev"><iframe id="f375" src="/" width="375" height="500"></iframe><div class="cap">375 — iPhone SE</div></div>
+  <div class="dev"><iframe id="f320" src="/" width="320" height="500"></iframe><div class="cap">320 — smallest</div></div>
+</div>
+
+<div id="out">measuring…</div>
+
+<script>
+/**
+ * The only pass condition that matters: can the user scroll the page sideways?
+ * That is documentElement.scrollWidth > viewport width. Individual elements are
+ * allowed to be wider than the viewport as long as an ancestor clips them —
+ * which is exactly what a scrollable code block or table does.
+ */
+function check(id, w){
+  const fr = document.getElementById(id);
+  const doc = fr.contentDocument;
+  if(!doc) return `viewport ${w}px → iframe not ready\n`;
+
+  const docW = doc.documentElement.scrollWidth;
+  const scrollsSideways = docW > w + 1;
+
+  let s = `viewport ${w}px → document scrollWidth ${docW} `;
+  s += scrollsSideways ? `FAIL (+${docW-w}px sideways scroll)\n` : `PASS\n`;
+
+  if (scrollsSideways) {
+    // Only when it fails do we care which element is responsible. An element is
+    // only a culprit if NO ancestor clips it.
+    const culprits = [];
+    doc.querySelectorAll('*').forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.right <= w + 1) return;
+      let clipped = false;
+      for (let p = el.parentElement; p; p = p.parentElement) {
+        const ox = getComputedStyle(p).overflowX;
+        if (ox === 'auto' || ox === 'scroll' || ox === 'hidden') { clipped = true; break; }
+      }
+      if (!clipped) {
+        const cs = getComputedStyle(el);
+        culprits.push(`    ${el.tagName.padEnd(7)} right=${String(Math.round(r.right)).padStart(5)} `
+          + `w=${String(Math.round(r.width)).padStart(4)} minW=${cs.minWidth}\n`
+          + `            ${(el.className||'').toString().slice(0,58)}\n`);
+      }
+    });
+    s += `  unclipped elements past the right edge: ${culprits.length}\n`;
+    s += culprits.slice(0,8).join('');
+  }
+
+  // Touch targets, checked at this viewport rather than at desktop width.
+  const small = [...doc.querySelectorAll('a,button')]
+    .filter(b => { const h = b.getBoundingClientRect().height; return h > 0 && h < 44; });
+  s += `  interactive elements under 44px: ${small.length}`;
+  s += small.length ? ` FAIL\n` : ` PASS\n`;
+  small.slice(0,4).forEach(b => {
+    s += `    "${b.textContent.trim().slice(0,28)}" — ${Math.round(b.getBoundingClientRect().height)}px\n`;
+  });
+
+  return s;
+}
+
+function render(){
+  document.getElementById('out').textContent =
+    check('f390',390) + '\n' + check('f375',375) + '\n' + check('f320',320);
+}
+window.addEventListener('load', ()=>setTimeout(render, 2200));
+</script>
+</body>
+</html>

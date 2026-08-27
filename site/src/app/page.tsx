@@ -333,7 +333,10 @@ export function SignIn() {
             href="https://github.com/pijarui/pijarui"
             rel="noreferrer noopener"
             target="_blank"
-            className="hover:text-foreground transition-colors"
+            // inline-flex + min-h-11 + -mx-2 px-2: target sentuh 44px tanpa
+            // menggeser posisi visualnya. Link teks polos di footer default-nya
+            // hanya setinggi barisnya (20px) — terlalu kecil untuk ibu jari.
+            className="hover:text-foreground -mx-2 inline-flex min-h-11 items-center px-2 transition-colors"
           >
             GitHub
           </a>
